@@ -1,0 +1,6 @@
+[test]
+coverageReporter = ["text"]
+
+[test.reporter]
+junit = "junit.xml"
+

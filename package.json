@@ -1,0 +1,41 @@
+{
+    "name": "advent-of-code-2024-typescript",
+    "version": "0.2.6",
+    "description": "Typescript solutions for Advent of Code 2024",
+    "scripts": {
+        "test": "scripts/test.sh",
+        "gen": "bun scripts/gen.ts",
+        "start": "scripts/start.sh",
+        "coverage": "bun test --coverage"
+    },
+    "keywords": [
+        "aoc",
+        "node",
+        "typescript",
+        "advent-of-code",
+        "bun"
+    ],
+    "author": "Andrew Nesvadba <nesvand@gmail.com>k",
+    "license": "MIT",
+    "dependencies": {
+        "remeda": "2.17.3",
+        "yargs": "17.7.2"
+    },
+    "devDependencies": {
+        "@biomejs/biome": "1.9.4",
+        "@commitlint/cli": "19.6.0",
+        "@commitlint/config-conventional": "19.6.0",
+        "@types/bun": "1.1.13",
+        "@types/ejs": "3.1.5",
+        "@types/node": "22.9.1",
+        "dotenv": "16.4.5",
+        "ejs": "3.1.10",
+        "node-fetch": "3.3.2",
+        "typescript": "5.6.3",
+        "zod": "3.23.8",
+        "zod-validation-error": "3.4.0"
+    },
+    "workspaces": [
+        "lib"
+    ]
+}
