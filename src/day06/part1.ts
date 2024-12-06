@@ -1,36 +1,12 @@
 // Advent of Code - Day 6 - Part One
 
+import { Grid } from '@lib/grid';
+
 // Up, Right, Down, Left
 export const DIRECTIONS = [[0, -1], [1, 0], [0, 1], [-1, 0]];
 
 export function nextDirection(direction: typeof DIRECTIONS[number]): typeof DIRECTIONS[number] {
     return DIRECTIONS[(DIRECTIONS.indexOf(direction) + 1) % 4];
-}
-
-export class Grid<T> {
-    constructor(public readonly items: T[][]) { }
-    *iterate(): Generator<[number, number, T]> {
-        for (let y = 0; y < this.items.length; y++) {
-            for (let x = 0; x < this.items[y].length; x++) {
-                yield [x, y, this.items[y][x]];
-            }
-        }
-    }
-    find(char: string): Array<[number, number]> {
-        const found: Array<[number, number]> = [];
-        for (const [x, y, item] of this.iterate()) {
-            if (item === char) {
-                found.push([x, y]);
-            }
-        }
-        return found;
-    }
-    get(x: number, y: number): T | undefined {
-        return this.items[y]?.[x];
-    }
-    toString(): string {
-        return this.items.map((row) => row.join('')).join('\n');
-    }
 }
 
 export function testPath(grid: Grid<string>, initialPos: [number, number], initialDirection: typeof DIRECTIONS[number], visited: Set<string>, detectLoop = false): boolean {

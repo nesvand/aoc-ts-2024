@@ -7,5 +7,6 @@ import * as general from './utils/general';
 import * as math from './utils/math';
 import * as SV from './utils/string-view';
 import * as strings from './utils/strings';
+import * as grid from './utils/grid';
 
-export { array, bench, bits, color, data, general, math, strings, SV };
+export { array, bench, bits, color, data, general, math, strings, SV, grid };

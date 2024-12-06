@@ -1,6 +1,7 @@
 // Advent of Code - Day 6 - Part Two
 
-import { testPath, Grid, DIRECTIONS } from "./part1";
+import { Grid } from '@lib/grid';
+import { testPath, DIRECTIONS } from "./part1";
 
 export function part2(input: string): number {
     const items = input
