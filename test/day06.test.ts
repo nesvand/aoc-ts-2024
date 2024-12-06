@@ -47,6 +47,6 @@ test('part two test', () => {
 
 if (input !== '') {
     test('part two answer', () => {
-        expect(part2(input)).toBe(0);
+        expect(part2(input)).toBe(1562);
     });
 }

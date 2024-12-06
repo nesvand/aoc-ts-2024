@@ -3,19 +3,22 @@
 // Up, Right, Down, Left
 export const DIRECTIONS = [[0, -1], [1, 0], [0, 1], [-1, 0]];
 
-function* gridIterator<T>(grid: T[][]): Generator<[number, number, T]> {
-    for (let y = 0; y < grid.length; y++) {
-        for (let x = 0; x < grid[y].length; x++) {
-            yield [x, y, grid[y][x]];
-        }
-    }
+export function nextDirection(direction: typeof DIRECTIONS[number]): typeof DIRECTIONS[number] {
+    return DIRECTIONS[(DIRECTIONS.indexOf(direction) + 1) % 4];
 }
 
 export class Grid<T> {
     constructor(public readonly items: T[][]) { }
+    *iterate(): Generator<[number, number, T]> {
+        for (let y = 0; y < this.items.length; y++) {
+            for (let x = 0; x < this.items[y].length; x++) {
+                yield [x, y, this.items[y][x]];
+            }
+        }
+    }
     find(char: string): Array<[number, number]> {
         const found: Array<[number, number]> = [];
-        for (const [x, y, item] of gridIterator(this.items)) {
+        for (const [x, y, item] of this.iterate()) {
             if (item === char) {
                 found.push([x, y]);
             }
@@ -30,30 +33,31 @@ export class Grid<T> {
     }
 }
 
-export function nextDirection(direction: typeof DIRECTIONS[number]): typeof DIRECTIONS[number] {
-    return DIRECTIONS[(DIRECTIONS.indexOf(direction) + 1) % 4];
-}
-
-export function testPath(grid: Grid<string>, initialPos: [number, number], direction: typeof DIRECTIONS[number], visited: Set<string>, loopDetection = false): boolean | undefined {
+export function testPath(grid: Grid<string>, initialPos: [number, number], initialDirection: typeof DIRECTIONS[number], visited: Set<string>, detectLoop = false): boolean {
     let position = [...initialPos];
+    let direction = initialDirection;
 
     while (true) {
         const [x, y] = position;
         const [dx, dy] = direction;
         const [nx, ny] = [x + dx, y + dy];
-        const key = `${nx},${ny}${loopDetection ? `${direction.join(',')}` : ''}`;
 
-        if (loopDetection && visited.has(key)) return true;
+        // By optionally tracking the direction we can we see if we're following the exact same path again (looping)
+        const key = `${nx},${ny}${detectLoop ? `${direction.join(',')}` : ''}`;
+        if (detectLoop && visited.has(key)) return true;
 
         const nextLocation = grid.get(nx, ny);
+
         // Out of Bounds - no loop, end of path
         if (nextLocation === undefined) return false;
+
         // If there's a barrier, turn around, otherwise move to the next position
         if (nextLocation === '#') {
-            return testPath(grid, [nx - dx, ny - dy], nextDirection(direction), visited, loopDetection);
+            direction = nextDirection(direction);
+        } else {
+            position = [nx, ny];
+            visited.add(key);
         }
-        position = [nx, ny];
-        visited.add(key);
     }
 }
 
@@ -66,10 +70,6 @@ export function part1(input: string): number {
     const [initialPosition] = grid.find('^');
     const visited = new Set<string>([`${initialPosition[0]},${initialPosition[1]}`]);
     testPath(grid, initialPosition, DIRECTIONS[0], visited);
-
-    for (const [x, y] of Array.from(visited).map((v) => v.split(',').map(Number))) {
-        items[y][x] = 'X';
-    }
 
     return visited.size;
 }
