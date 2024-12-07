@@ -30,9 +30,9 @@ if (input !== '') {
     });
 }
 
-test('part two test', () => {
+test('part two test', async () => {
     // biome-ignore lint/style/noUnusedTemplateLiteral: Empty by design
-    expect(part2(`....#.....
+    expect(await part2(`....#.....
 .........#
 ..........
 ..#.......
@@ -46,7 +46,7 @@ test('part two test', () => {
 });
 
 if (input !== '') {
-    test('part two answer', () => {
-        expect(part2(input)).toBe(1562);
+    test('part two answer', async () => {
+        expect(await part2(input)).toBe(1562);
     });
 }
