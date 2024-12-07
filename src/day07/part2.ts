@@ -10,16 +10,17 @@ function tryConcatenation(a: number, b: number) {
         a = 65
         b = 5
         
-        In this case, sub = 60, and bMag = 10
+        In this case, diff = 60, and bMag = 10
         (reminder: Math.log10 returns the magnitude of the number, ie. log10(10) = 1, log10(100) = 2, etc.)
         (by plugging this into `10 ** (Math.floor(Math.log10(b)) + 1)` we get 10, 100, etc.)
         (think of this like checking if we can shift one number to the right by the number of digits in the other and add them together)
         
-        _SO_ if we can divide `sub` by `bMag` it means we know these two numbers _can_ be concatenated at this point (it doesn't
+        _SO_ if we can divide `diff` by `bMag` it means we know these two numbers _can_ be concatenated at this point (it doesn't
         guarantee that this branch will result in a correct answer, but it's a theoretical possibility)
     */
-    const [sub, bMag] = [a - b, 10 ** (Math.floor(Math.log10(b)) + 1)];
-    return sub > 0 && sub % bMag === 0 ? sub / bMag : -1;
+    const diff = a - b;
+    const bMag = 10 ** (Math.floor(Math.log10(b)) + 1);
+    return diff > 0 && diff % bMag === 0 ? diff / bMag : -1;
 }
 
 
