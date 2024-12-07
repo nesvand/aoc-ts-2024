@@ -1,78 +1,32 @@
 // Advent of Code - Day 7 - Part One
 
-import { StringView } from "@lib/string-view";
+export function tryDivide(a: number, b: number): number {
+    return a % b === 0 ? a / b : -1;
+}
 
-function generateListOfOperators(n: number): string[][] {
-    const initialList: string[][] = [['+'], ['*']]
-    while (!initialList.every((l) => l.length === n)) {
-        const l = initialList.shift();
-        if (l === undefined) throw new Error('Failed to generate list of operators');
-        const copy = l.slice();
-        l.push('+');
-        copy.push('*');
-        initialList.push(copy);
-        initialList.push(l);
+export function tryAdd(a: number, b: number): number {
+    return a - b;
+}
+
+export function bindCanEval(ops: Array<(a: number, b: number) => number>) {
+    return function canEval(equation: number[], target: number, i = equation.length - 1): boolean {
+        // If we're at the first index check to see if our current target value matches
+        if (i === 0) return target === equation[0];
+        // Our target can't be negative, so this is an immediate fail
+        if (target < 0) return false;
+
+        // Branch out back through the equation, checking until we've exhausted all operations in reverse order
+        return ops.some((op) => canEval(equation, op(target, equation[i]), i - 1));
     }
-    return initialList;
 }
 
 export function part1(input: string): number {
-    const items = input
+    const items = input.trim()
         .replaceAll('\r', '')
-        .split('\n').filter(Boolean)
-        .map((line) => {
-            const sv = new StringView(line);
-            const answer = sv.chopInt();
-            if (!answer.success) throw new Error('Failed to parse answer');
-            sv.chopLeft(2);
-            const parts: number[] = [];
-            let part = sv.chopInt();
-            while (part.success) {
-                parts.push(part.data);
-                sv.chopLeft(1);
-                part = sv.chopInt();
-            }
-            return { answer: answer.data, parts };
-        });
-    let finalResult = 0;
-    for (const { answer, parts } of items) {
-        const numberOfOperators = parts.length - 1;
-        if (numberOfOperators === 0) throw new Error('Unexpected number of operators');
-        if (numberOfOperators === 1) {
-            const [a, b] = parts;
-            if (a + b === answer) {
-                finalResult += answer;
-                continue;
-            }
-            if (a * b === answer) {
-                finalResult += answer;
-                continue;
-            }
-            // invalid, skip
-            continue;
-        }
-        const operatorList = generateListOfOperators(numberOfOperators);
-        for (const operators of operatorList) {
-            let result = 0;
-            for (const [i, operator] of operators.entries()) {
-                if (i === 0) {
-                    result = parts[0];
-                }
-                const next = parts[i + 1];
-                switch (operator) {
-                    case '+':
-                        result += next;
-                        break;
-                    case '*':
-                        result *= next;
-                        break;
-                }
-            }
-            if (result === answer) {
-                finalResult += answer;
-                break;
-            }
-        }
-    }
-    return finalResult;
+        .split('\n')
+        // biome-ignore lint/style/noNonNullAssertion: we know the numbers are there
+        .map((line) => line.match(/\d+/g)!.map(Number));
+
+    const evalsTo = bindCanEval([tryDivide, tryAdd]);
+    return items.filter(([target, ...equation]) => evalsTo(equation, target)).reduce((acc, [target]) => acc + target, 0);
 }

@@ -40,11 +40,11 @@ test('part two test', () => {
 192: 17 8 14
 21037: 9 7 18 13
 292: 11 6 16 20
-`)).toBe(0);
+`)).toBe(11387);
 });
 
 if (input !== '') {
     test('part two answer', () => {
-        expect(part2(input)).toBe(0);
+        expect(part2(input)).toBe(227615740238334);
     });
 }
