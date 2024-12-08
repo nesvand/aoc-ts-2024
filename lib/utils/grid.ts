@@ -19,6 +19,11 @@ export class Grid<T> {
     get(x: number, y: number): T | undefined {
         return this.items[y]?.[x];
     }
+    set(x: number, y: number, value: T): void {
+        if (!this.items[y]) return;
+        if (!this.items[y][x]) return;
+        this.items[y][x] = value;
+    }
     toString(): string {
         return this.items.map((row) => row.join('')).join('\n');
     }
