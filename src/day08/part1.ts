@@ -2,23 +2,19 @@
 
 import { Grid } from "@lib/grid";
 
-export function part1(input: string): number {
-    const items = input.trim()
-        .replaceAll('\r', '')
-        .split('\n')
-        .map((lines) => lines.split('').filter(Boolean));
-    const grid = new Grid(items);
-
+export function calcNodeLocationPairs(grid: Grid<string>): Record<string, Array<[[number, number], [number, number]]>> {
     const nodes = new Set<string>();
     for (const [, , char] of grid.iterate()) {
         if (char === '.') continue;
         nodes.add(char);
     }
+
     const nodeLocations: Record<string, Array<[number, number]>> = {};
     for (const char of nodes) {
         const foundChars = grid.find(char);
         nodeLocations[char] = foundChars;
     }
+
     const nodeLocationPairs: Record<string, Array<[[number, number], [number, number]]>> = {};
     for (const [char, locations] of Object.entries(nodeLocations)) {
         const pairs: Array<[[number, number], [number, number]]> = [];
@@ -31,6 +27,17 @@ export function part1(input: string): number {
         }
         nodeLocationPairs[char] = pairs;
     }
+
+    return nodeLocationPairs;
+}
+
+export function part1(input: string): number {
+    const items = input.trim()
+        .replaceAll('\r', '')
+        .split('\n')
+        .map((lines) => lines.split('').filter(Boolean));
+    const grid = new Grid(items);
+    const nodeLocationPairs = calcNodeLocationPairs(grid);
 
     for (const [, pairs] of Object.entries(nodeLocationPairs)) {
         for (const [current, next] of pairs) {

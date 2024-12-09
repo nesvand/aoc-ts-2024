@@ -46,11 +46,11 @@ test('part two test', () => {
 .........A..
 ............
 ............
-`)).toBe(0);
+`)).toBe(34);
 });
 
 if (input !== '') {
     test('part two answer', () => {
-        expect(part2(input)).toBe(0);
+        expect(part2(input)).toBe(962);
     });
 }
