@@ -19,7 +19,19 @@ export class Grid<T> {
     get(x: number, y: number): T | undefined {
         return this.items[y]?.[x];
     }
+    set(x: number, y: number, value: T): boolean {
+        if (!this.items[y]) return false;
+        if (!this.items[y][x]) return false;
+        this.items[y][x] = value;
+        return true;
+    }
     toString(): string {
         return this.items.map((row) => row.join('')).join('\n');
+    }
+    get height(): number {
+        return this.items.length;
+    }
+    get width(): number {
+        return this.items[0].length;
     }
 }
