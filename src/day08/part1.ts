@@ -40,17 +40,13 @@ export function part1(input: string): number {
     const nodeLocationPairs = calcNodeLocationPairs(grid);
 
     for (const [, pairs] of Object.entries(nodeLocationPairs)) {
-        for (const [current, next] of pairs) {
-            const [x1, y1] = current;
-            const [x2, y2] = next;
-            const dx1 = x2 - x1;
-            const dy1 = y2 - y1;
-            const dx2 = x1 - x2;
-            const dy2 = y1 - y2;
-            const beyondNext = [x2 + dx1, y2 + dy1];
-            const beyondCurrent = [x1 + dx2, y1 + dy2];
-            grid.set(beyondNext[0], beyondNext[1], '#');
-            grid.set(beyondCurrent[0], beyondCurrent[1], '#');
+        for (const [a, b] of pairs) {
+            const [x1, y1] = a;
+            const [x2, y2] = b;
+            const [nx1, ny1] = [2 * x2 - x1, 2 * y2 - y1];
+            grid.set(nx1, ny1, '#');
+            const [nx2, ny2] = [2 * x1 - x2, 2 * y1 - y2];
+            grid.set(nx2, ny2, '#');
         }
     }
     const count = grid.find('#').length;
