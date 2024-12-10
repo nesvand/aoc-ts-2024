@@ -1,7 +1,7 @@
 // Advent of Code - Day 10 - Part Two
 
 import { Grid } from "@lib/grid";
-import { nextLocs } from "./part1";
+import { bindNextLocs } from "./part1";
 
 export function part2(input: string): number {
     const items = input.trim()
@@ -9,18 +9,21 @@ export function part2(input: string): number {
         .split('\n')
         .map((lines) => lines.split('').map(Number));
     const grid = new Grid(items);
+    const getNextLocs = bindNextLocs(grid);
     const starts = grid.find(0);
 
     let result = 0;
     for (const start of starts) {
-        let next = [start];
-        while (next.length > 0) {
-            const found: [number, number][] = [];
-            for (const [x, y] of next) {
+        let nextLocs = [start];
+        while (nextLocs.length > 0) {
+            const foundLocs: [number, number][] = [];
+
+            for (const [x, y] of nextLocs) {
                 if (grid.get(x, y) === 9) result++;
-                else found.push(...nextLocs(grid, x, y));
+                else foundLocs.push(...getNextLocs(x, y));
             }
-            next = found;
+
+            nextLocs = foundLocs;
         }
     }
 
