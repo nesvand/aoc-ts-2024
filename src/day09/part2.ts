@@ -1,7 +1,5 @@
 // Advent of Code - Day 9 - Part Two
 
-import { expandDiskMap, checksum, type DiskMap } from "./part1";
-
 function createDiskMap(numbers: number[]) {
     const disk: Array<number | "."> = [];
     let fileId = 0;
