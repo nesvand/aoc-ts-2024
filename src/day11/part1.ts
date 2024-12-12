@@ -1,5 +1,7 @@
 // Advent of Code - Day 11 - Part One
 
+import { memoizeRecursive } from '@lib/general';
+
 /*
     Rules:
     - If stone equals 0, replace the stone with a value of 1
@@ -9,50 +11,31 @@
     - Order is preserved
 */
 
-const functionMemo = new Map<string, (...args: unknown[]) => unknown>();
-export function memoize<Args extends unknown[], Ret>(fn: (...args: Args) => Ret): (...args: Args) => Ret {
-    const functionName = fn.name;
-    const memo = new Map<string, Ret>();
+export const processStone = memoizeRecursive(
+    (_processStone: (stone: number, blinks: number) => number, stone: number, blinks: number): number => {
+        if (blinks === 0) return 1;
 
-    if (functionMemo.has(fn.name)) return functionMemo.get(fn.name) as (...args: Args) => Ret;
-    const memoizedFn = (...args: Args) => {
-        const key = JSON.stringify(args);
-        // biome-ignore lint/style/noNonNullAssertion: <explanation>
-        if (memo.has(key)) return memo.get(key)!;
-        const result = fn(...args);
-        memo.set(key, result);
-        return result;
-    };
-    functionMemo.set(functionName, memoizedFn as (...args: unknown[]) => unknown);
-    console.log(`Memoized ${functionName}`);
-    return memoizedFn;
-}
-
-export function processStone(stone: number, blinks: number): number {
-    const _processStone = memoize(processStone);
-    if (blinks === 0) return 1;
-
-    let total = 0;
-    const stoneString = stone.toString();
-    if (stone === 0) total = _processStone(1, blinks - 1);
-    else if (stoneString.length % 2 === 0) {
-        const left = Number.parseInt(stoneString.slice(0, stoneString.length / 2));
-        const right = Number.parseInt(stoneString.slice(-stoneString.length / 2));
-        total = _processStone(left, blinks - 1) + _processStone(right, blinks - 1);
-    } else {
-        total = _processStone(stone * 2024, blinks - 1);
-    }
-    return total;
-}
+        let total = 0;
+        const stoneString = stone.toString();
+        if (stone === 0) total = _processStone(1, blinks - 1);
+        else if (stoneString.length % 2 === 0) {
+            const left = Number.parseInt(stoneString.slice(0, stoneString.length / 2));
+            const right = Number.parseInt(stoneString.slice(-stoneString.length / 2));
+            total = _processStone(left, blinks - 1) + _processStone(right, blinks - 1);
+        } else {
+            total = _processStone(stone * 2024, blinks - 1);
+        }
+        return total;
+    },
+);
 
 export function part1(input: string): number {
     const stones = input.trim().split(' ').map(Number);
-    const _processStone = memoize(processStone);
 
     const blinks = 25;
     let total = 0;
     for (const stone of stones) {
-        total += _processStone(stone, blinks);
+        total += processStone(stone, blinks);
     }
 
     return total;
