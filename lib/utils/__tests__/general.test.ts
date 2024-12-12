@@ -1,5 +1,5 @@
-import { describe, expect, jest, test } from 'bun:test';
-import { asyncTimes, invert, isDefined, mapGetOrCreate, times, wait } from '@lib/general';
+import { describe, expect, jest, test, spyOn } from 'bun:test';
+import { memoize, memoizeRecursive, asyncTimes, invert, isDefined, mapGetOrCreate, times, wait } from '@lib/general';
 
 describe('@lib/utils/general', () => {
     describe('isDefined', () => {
@@ -111,6 +111,125 @@ describe('@lib/utils/general', () => {
             };
             const actual = invert(map);
             expect(actual).toEqual(expected);
+        });
+    });
+
+    describe('memoize', () => {
+        test('should cache and return the same result for repeated calls', () => {
+            const mockFn = jest.fn((x: number) => x * 2);
+            const memoizedFn = memoize(mockFn);
+
+            // First call
+            const result1 = memoizedFn(5);
+            expect(result1).toBe(10);
+            expect(mockFn).toHaveBeenCalledTimes(1);
+
+            // Repeated call with same argument
+            const result2 = memoizedFn(5);
+            expect(result2).toBe(10);
+            expect(mockFn).toHaveBeenCalledTimes(1); // Function should not be called again
+        });
+
+        test('should work with different argument types', () => {
+            const mockFn = jest.fn((x: string, y: number) => x.repeat(y));
+            const memoizedFn = memoize(mockFn);
+
+            const result1 = memoizedFn('a', 3);
+            const result2 = memoizedFn('a', 3);
+            expect(result1).toBe('aaa');
+            expect(result2).toBe('aaa');
+            expect(mockFn).toHaveBeenCalledTimes(1);
+        });
+
+        test('should respect maxSize option', () => {
+            const mockFn = jest.fn((x: number) => x * 2);
+            const memoizedFn = memoize(mockFn, { maxSize: 2 });
+
+            // Fill cache
+            memoizedFn(1);
+            memoizedFn(2);
+            expect(mockFn).toHaveBeenCalledTimes(2);
+
+            // Retrieve cached values
+            memoizedFn(1);
+            memoizedFn(2);
+            expect(mockFn).toHaveBeenCalledTimes(2);
+
+            // Add third value, which should evict the oldest
+            memoizedFn(3);
+            expect(mockFn).toHaveBeenCalledTimes(3);
+
+            // First cached value should now be recomputed
+            memoizedFn(1);
+            expect(mockFn).toHaveBeenCalledTimes(4);
+        });
+
+        test('should work with custom resolver', () => {
+            const mockFn = jest.fn((x: number, y: number) => x + y);
+            const memoizedFn = memoize(mockFn, {
+                resolver: (x, y) => JSON.stringify([x, y].sort()), // Sort arguments to treat (1,2) same as (2,1)
+            });
+
+            const result1 = memoizedFn(1, 2);
+            const result2 = memoizedFn(2, 1);
+            expect(result1).toBe(3);
+            expect(result2).toBe(3);
+            expect(mockFn).toHaveBeenCalledTimes(1);
+        });
+
+        test('should handle complex objects', () => {
+            const mockFn = jest.fn((obj: { a: number; b: string }) => obj.a + obj.b);
+            const memoizedFn = memoize(mockFn);
+
+            const obj1 = { a: 1, b: 'test' };
+            const obj2 = { a: 1, b: 'test' };
+
+            const result1 = memoizedFn(obj1);
+            const result2 = memoizedFn(obj2);
+            expect(result1).toBe('1test');
+            expect(result2).toBe('1test');
+            expect(mockFn).toHaveBeenCalledTimes(1);
+        });
+    });
+
+    describe('memoizeRecursive', () => {
+        test('should memoize recursive fibonacci', () => {
+            const fibonacci = memoizeRecursive((memo: (n: number) => number, n: number): number => {
+                if (n <= 1) return n;
+                return memo(n - 1) + memo(n - 2);
+            });
+
+            // First calculation of fib(5)
+            const result1 = fibonacci(5);
+            expect(result1).toBe(5);
+
+            // Second calculation should use memoized results
+            const result2 = fibonacci(5);
+            expect(result2).toBe(5);
+        });
+
+        test('should handle different argument combinations', () => {
+            const complexRecursive = memoizeRecursive(
+                (memo: (a: number, b: string) => string, a: number, b: string) => {
+                    if (a <= 0) return b;
+                    return memo(a - 1, b + a.toString());
+                },
+            );
+
+            const result1 = complexRecursive(3, 'x');
+            const result2 = complexRecursive(3, 'x');
+            expect(result1).toBe('x321');
+            expect(result2).toBe('x321');
+        });
+
+        test('should work with multiple recursive calls', () => {
+            const factorial = memoizeRecursive((memo: (n: number) => number, n: number): number => {
+                if (n <= 1) return 1;
+                return n * memo(n - 1);
+            });
+
+            const results = [factorial(5), factorial(5), factorial(4), factorial(4)];
+            expect(results).toEqual([120, 120, 24, 24]);
         });
     });
 });
