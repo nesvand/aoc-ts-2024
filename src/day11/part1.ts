@@ -1,6 +1,6 @@
 // Advent of Code - Day 11 - Part One
 
-import { memoize } from '@lib/general';
+import { memoizeRecursive } from '@lib/general';
 
 /*
     Rules:
@@ -11,31 +11,31 @@ import { memoize } from '@lib/general';
     - Order is preserved
 */
 
-export function processStone(stone: number, blinks: number): number {
-    const _processStone = memoize(processStone);
-    if (blinks === 0) return 1;
+export const processStone = memoizeRecursive(
+    (_processStone: (stone: number, blinks: number) => number, stone: number, blinks: number): number => {
+        if (blinks === 0) return 1;
 
-    let total = 0;
-    const stoneString = stone.toString();
-    if (stone === 0) total = _processStone(1, blinks - 1);
-    else if (stoneString.length % 2 === 0) {
-        const left = Number.parseInt(stoneString.slice(0, stoneString.length / 2));
-        const right = Number.parseInt(stoneString.slice(-stoneString.length / 2));
-        total = _processStone(left, blinks - 1) + _processStone(right, blinks - 1);
-    } else {
-        total = _processStone(stone * 2024, blinks - 1);
-    }
-    return total;
-}
+        let total = 0;
+        const stoneString = stone.toString();
+        if (stone === 0) total = _processStone(1, blinks - 1);
+        else if (stoneString.length % 2 === 0) {
+            const left = Number.parseInt(stoneString.slice(0, stoneString.length / 2));
+            const right = Number.parseInt(stoneString.slice(-stoneString.length / 2));
+            total = _processStone(left, blinks - 1) + _processStone(right, blinks - 1);
+        } else {
+            total = _processStone(stone * 2024, blinks - 1);
+        }
+        return total;
+    },
+);
 
 export function part1(input: string): number {
     const stones = input.trim().split(' ').map(Number);
-    const _processStone = memoize(processStone);
 
     const blinks = 25;
     let total = 0;
     for (const stone of stones) {
-        total += _processStone(stone, blinks);
+        total += processStone(stone, blinks);
     }
 
     return total;
