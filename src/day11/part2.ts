@@ -1,6 +1,7 @@
 // Advent of Code - Day 11 - Part Two
 
-import { memoize, processStone } from "./part1";
+import { memoize } from '@lib/general';
+import { processStone } from './part1';
 
 export function part2(input: string): number {
     const stones = input.trim().split(' ').map(Number);

@@ -1,5 +1,7 @@
 // Advent of Code - Day 11 - Part One
 
+import { memoize } from '@lib/general';
+
 /*
     Rules:
     - If stone equals 0, replace the stone with a value of 1
@@ -8,25 +10,6 @@
     - If none of the other rules apply, the stone is replaced by a new stone multiplied by 2024, ie. 100 becomes 202400
     - Order is preserved
 */
-
-const functionMemo = new Map<string, (...args: unknown[]) => unknown>();
-export function memoize<Args extends unknown[], Ret>(fn: (...args: Args) => Ret): (...args: Args) => Ret {
-    const functionName = fn.name;
-    const memo = new Map<string, Ret>();
-
-    if (functionMemo.has(fn.name)) return functionMemo.get(fn.name) as (...args: Args) => Ret;
-    const memoizedFn = (...args: Args) => {
-        const key = JSON.stringify(args);
-        // biome-ignore lint/style/noNonNullAssertion: <explanation>
-        if (memo.has(key)) return memo.get(key)!;
-        const result = fn(...args);
-        memo.set(key, result);
-        return result;
-    };
-    functionMemo.set(functionName, memoizedFn as (...args: unknown[]) => unknown);
-    console.log(`Memoized ${functionName}`);
-    return memoizedFn;
-}
 
 export function processStone(stone: number, blinks: number): number {
     const _processStone = memoize(processStone);

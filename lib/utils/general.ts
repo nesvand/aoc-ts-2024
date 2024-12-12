@@ -49,3 +49,21 @@ export const invert = <T extends string | number | symbol>(map: Record<string, T
         {} as Record<T, string>,
     );
 };
+
+const functionMemo = new Map<string, (...args: unknown[]) => unknown>();
+export function memoize<Args extends unknown[], Ret>(fn: (...args: Args) => Ret): (...args: Args) => Ret {
+    const functionName = fn.name;
+    const memo = new Map<string, Ret>();
+
+    if (functionMemo.has(fn.name)) return functionMemo.get(fn.name) as (...args: Args) => Ret;
+    const memoizedFn = (...args: Args) => {
+        const key = JSON.stringify(args);
+        // biome-ignore lint/style/noNonNullAssertion: <explanation>
+        if (memo.has(key)) return memo.get(key)!;
+        const result = fn(...args);
+        memo.set(key, result);
+        return result;
+    };
+    functionMemo.set(functionName, memoizedFn as (...args: unknown[]) => unknown);
+    return memoizedFn;
+}
