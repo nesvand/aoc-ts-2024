@@ -194,18 +194,21 @@ describe('@lib/utils/general', () => {
 
     describe('memoizeRecursive', () => {
         test('should memoize recursive fibonacci', () => {
-            const fibonacci = memoizeRecursive((memo: (n: number) => number, n: number): number => {
+            const mockFn = jest.fn((memo: (n: number) => number, n: number): number => {
                 if (n <= 1) return n;
                 return memo(n - 1) + memo(n - 2);
             });
+            const fibonacci = memoizeRecursive(mockFn);
 
             // First calculation of fib(5)
             const result1 = fibonacci(5);
             expect(result1).toBe(5);
+            expect(mockFn).toHaveBeenCalledTimes(6);
 
             // Second calculation should use memoized results
             const result2 = fibonacci(5);
             expect(result2).toBe(5);
+            expect(mockFn).toHaveBeenCalledTimes(1);
         });
 
         test('should handle different argument combinations', () => {
