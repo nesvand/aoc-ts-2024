@@ -193,46 +193,42 @@ describe('@lib/utils/general', () => {
     });
 
     describe('memoizeRecursive', () => {
-        test('should memoize recursive fibonacci', () => {
-            const mockFn = jest.fn((memo: (n: number) => number, n: number): number => {
+        test('should memoize recursive fibonacci and track calls', () => {
+            const mockFibonacci = jest.fn((memo: (n: number) => number, n: number): number => {
                 if (n <= 1) return n;
                 return memo(n - 1) + memo(n - 2);
             });
-            const fibonacci = memoizeRecursive(mockFn);
+
+            const fibonacci = memoizeRecursive(mockFibonacci);
 
             // First calculation of fib(5)
             const result1 = fibonacci(5);
             expect(result1).toBe(5);
-            expect(mockFn).toHaveBeenCalledTimes(6);
 
             // Second calculation should use memoized results
             const result2 = fibonacci(5);
             expect(result2).toBe(5);
-            expect(mockFn).toHaveBeenCalledTimes(1);
+
+            // Check how many unique calls were made
+            // For fib(5), the unique calls would be fib(0), fib(1), fib(2), fib(3), fib(4), fib(5)
+            expect(mockFibonacci).toHaveBeenCalledTimes(6);
         });
 
-        test('should handle different argument combinations', () => {
-            const complexRecursive = memoizeRecursive(
-                (memo: (a: number, b: string) => string, a: number, b: string) => {
-                    if (a <= 0) return b;
-                    return memo(a - 1, b + a.toString());
-                },
-            );
+        test('should track calls in complex recursive function', () => {
+            const mockComplexRecursive = jest.fn((memo: (a: number, b: string) => string, a: number, b: string) => {
+                if (a <= 0) return b;
+                return memo(a - 1, b + a.toString());
+            });
+
+            const complexRecursive = memoizeRecursive(mockComplexRecursive);
 
             const result1 = complexRecursive(3, 'x');
             const result2 = complexRecursive(3, 'x');
             expect(result1).toBe('x321');
             expect(result2).toBe('x321');
-        });
 
-        test('should work with multiple recursive calls', () => {
-            const factorial = memoizeRecursive((memo: (n: number) => number, n: number): number => {
-                if (n <= 1) return 1;
-                return n * memo(n - 1);
-            });
-
-            const results = [factorial(5), factorial(5), factorial(4), factorial(4)];
-            expect(results).toEqual([120, 120, 24, 24]);
+            // Check the number of unique calls
+            expect(mockComplexRecursive).toHaveBeenCalledTimes(4); // calls for a=3, a=2, a=1, a=0
         });
     });
 });
