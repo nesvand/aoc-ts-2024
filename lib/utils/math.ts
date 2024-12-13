@@ -62,3 +62,16 @@ export const mapRange = (value: number, fromStart: number, fromEnd: number, toSt
     const scale = (toEnd - toStart) / fromRange;
     return (value - fromStart) * scale + toStart;
 };
+
+/**
+ * Returns the greatest common divisor of two numbers.
+ * @example gcd(12, 8) // 4
+ */
+export function gcd(a: number, b: number): number {
+    let _a = Math.abs(a);
+    let _b = Math.abs(b);
+    while (_b !== 0) {
+        [_a, _b] = [_b, _a % _b];
+    }
+    return _a;
+}
