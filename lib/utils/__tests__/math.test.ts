@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'bun:test';
-import { clamp, isNumber, lerp, lerpAngle, mapRange, mod } from '@lib/math';
+import { clamp, isNumber, lerp, lerpAngle, mapRange, mod, gcd } from '@lib/math';
 
 describe('@lib/utils/math', () => {
     describe('isNumber', () => {
@@ -122,6 +122,34 @@ describe('@lib/utils/math', () => {
 
         test('it should invert the range if both ranges are inverted', () => {
             expect(mapRange(2, 10, 0, 100, 0)).toBe(20);
+        });
+    });
+
+    describe('gcd', () => {
+        test('should return the gcd of two positive numbers', () => {
+            expect(gcd(12, 8)).toBe(4);
+        });
+
+        test('should return the gcd when one number is zero', () => {
+            expect(gcd(0, 5)).toBe(5);
+            expect(gcd(5, 0)).toBe(5);
+        });
+
+        test('should return the gcd of two negative numbers', () => {
+            expect(gcd(-12, -8)).toBe(4);
+        });
+
+        test('should return the gcd of a positive and a negative number', () => {
+            expect(gcd(12, -8)).toBe(4);
+            expect(gcd(-12, 8)).toBe(4);
+        });
+
+        test('should return the gcd of two equal numbers', () => {
+            expect(gcd(5, 5)).toBe(5);
+        });
+
+        test('should return 1 for coprime numbers', () => {
+            expect(gcd(15, 28)).toBe(1);
         });
     });
 });
