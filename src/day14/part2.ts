@@ -2,7 +2,6 @@
 
 import readline from "node:readline";
 import { Grid } from "@lib/grid";
-import { exit } from "node:process";
 import { nextpos } from "./part1";
 
 const rl = readline.createInterface({
@@ -10,7 +9,7 @@ const rl = readline.createInterface({
     output: process.stdout,
 });
 
-export async function part2(input: string, width = 101, height = 103): number {
+export async function part2(input: string, width = 101, height = 103): Promise<number> {
     if (!input) return 0;
     const items = input.trim().split('\n')
         .map((line) => {
@@ -41,7 +40,7 @@ export async function part2(input: string, width = 101, height = 103): number {
             console.log(i);
             console.log(grid.toString());
             void await new Promise((resolve) => {
-                rl.question('Continue?', (answer) => resolve(undefined));
+                rl.question('Continue?', () => resolve(undefined));
             });
         }
     }
