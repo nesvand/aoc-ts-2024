@@ -7,6 +7,10 @@ export class Grid<T> {
             }
         }
     }
+    static from<F>(width: number, height: number, value: F): Grid<F> {
+        const items = Array.from({ length: height }, () => Array.from({ length: width }, () => value));
+        return new Grid(items);
+    }
     find(token: T, compare = (a: T, b: T) => a === b): Array<[number, number]> {
         const found: Array<[number, number]> = [];
         for (const [x, y, item] of this.iterate()) {
@@ -20,8 +24,8 @@ export class Grid<T> {
         return this.items[y]?.[x];
     }
     set(x: number, y: number, value: T): boolean {
-        if (!this.items[y]) return false;
-        if (!this.items[y][x]) return false;
+        if (this.items[y] === undefined) return false;
+        if (this.items[y][x] === undefined) return false;
         this.items[y][x] = value;
         return true;
     }
