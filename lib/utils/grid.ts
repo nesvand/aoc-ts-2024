@@ -7,6 +7,9 @@ export class Grid<T> {
             }
         }
     }
+    [Symbol.iterator](): Iterator<[number, number, T]> {
+        return this.iterate();
+    }
     static from<F>(width: number, height: number, value: F): Grid<F> {
         const items = Array.from({ length: height }, () => Array.from({ length: width }, () => value));
         return new Grid(items);
