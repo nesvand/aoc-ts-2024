@@ -7,6 +7,9 @@ export class Grid<T> {
             }
         }
     }
+    [Symbol.iterator](): Iterator<[number, number, T]> {
+        return this.iterate();
+    }
     static from<F>(width: number, height: number, value: F): Grid<F> {
         const items = Array.from({ length: height }, () => Array.from({ length: width }, () => value));
         return new Grid(items);
@@ -28,6 +31,9 @@ export class Grid<T> {
         if (this.items[y][x] === undefined) return false;
         this.items[y][x] = value;
         return true;
+    }
+    clone(): Grid<T> {
+        return new Grid(this.items.map((row) => row.slice()));
     }
     toString(): string {
         return this.items.map((row) => row.join('')).join('\n');
