@@ -1,7 +1,6 @@
 // Advent of Code - Day 15 - Part One
 
 import { Grid } from "@lib/grid";
-import { X509Certificate } from "crypto";
 
 const directions: Array<[number, number]> = [
     [0, -1], // up
@@ -69,12 +68,8 @@ export function part1(input: string): number {
             robot[0] += dx;
             robot[1] += dy;
             if (!grid.set(x, y, '.')) throw new Error(`Failed to set value at (${x}, ${y})`);
-        } else {
-            // Can't move box
         }
-        // console.log(grid.toString());
-        // console.log();
     }
     const boxes = grid.find('O');
-    return boxes.reduce((sum, [x, y]) => sum + (x + 100 * y), 0)
+    return boxes.reduce((sum, [x, y]) => sum + (x + 100 * y), 0);
 }

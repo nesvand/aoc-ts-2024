@@ -32,6 +32,9 @@ export class Grid<T> {
         this.items[y][x] = value;
         return true;
     }
+    clone(): Grid<T> {
+        return new Grid(this.items.map((row) => row.slice()));
+    }
     toString(): string {
         return this.items.map((row) => row.join('')).join('\n');
     }
