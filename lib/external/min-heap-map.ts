@@ -1,3 +1,7 @@
+/*
+  MinHeapMap by https://github.com/borgbean
+*/
+
 export class MinHeapMap<T> {
     heap: T[];
     size: number;
