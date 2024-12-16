@@ -26,7 +26,7 @@ MMMISSJEEE
 
 if (input !== '') {
     test('part one answer', () => {
-        expect(part1(input)).toBe(0);
+        expect(part1(input)).toBe(1494342);
     });
 }
 
@@ -47,6 +47,6 @@ MMMISSJEEE
 
 if (input !== '') {
     test('part two answer', () => {
-        expect(part2(input)).toBe(0);
+        expect(part2(input)).toBe(893676);
     });
 }

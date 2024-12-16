@@ -1,6 +1,7 @@
 // ============================================================================
 // @aon/solver-helpers
 // StringSet.ts
+// extended by nesvand
 // ============================================================================
 
 export class StringSet<T extends unknown & { toString(): string }> implements Set<T> {
@@ -8,6 +9,34 @@ export class StringSet<T extends unknown & { toString(): string }> implements Se
 
     constructor(iterable?: Iterable<T>) {
         this.#map = new Map([...(iterable ?? [])].map(t => [t.toString(), t]));
+    }
+
+    union<U>(other: ReadonlySetLike<U>): Set<T | U> {
+        throw new Error("Method not implemented.");
+    }
+
+    intersection<U>(other: ReadonlySetLike<U>): Set<T & U> {
+        throw new Error("Method not implemented.");
+    }
+
+    difference<U>(other: ReadonlySetLike<U>): Set<T> {
+        throw new Error("Method not implemented.");
+    }
+
+    symmetricDifference<U>(other: ReadonlySetLike<U>): Set<T | U> {
+        throw new Error("Method not implemented.");
+    }
+
+    isSubsetOf(other: ReadonlySetLike<unknown>): boolean {
+        throw new Error("Method not implemented.");
+    }
+
+    isSupersetOf(other: ReadonlySetLike<unknown>): boolean {
+        throw new Error("Method not implemented.");
+    }
+
+    isDisjointFrom(other: ReadonlySetLike<unknown>): boolean {
+        throw new Error("Method not implemented.");
     }
 
     add(value: T) {
@@ -24,9 +53,8 @@ export class StringSet<T extends unknown & { toString(): string }> implements Se
     }
 
     forEach(callbackfn: (value: T, value2: T, set: Set<T>) => void, thisArg?: unknown): void {
-        for (const value of this.#map.values()) {
-            callbackfn.bind(thisArg)(value, value, this);
-        }
+        // biome-ignore lint/complexity/noForEach: we'll allow it
+        this.#map.forEach(val => callbackfn(val, val, this), thisArg);
     }
 
     has(value: T): boolean {
@@ -38,19 +66,19 @@ export class StringSet<T extends unknown & { toString(): string }> implements Se
     }
 
     entries() {
-        return this.#iterableWrapper(true) as IterableIterator<[T, T]>;
+        return this.#iterableWrapper(true) as SetIterator<[T, T]>;
     }
 
     keys() {
-        return this.#iterableWrapper() as IterableIterator<T>;
+        return this.#iterableWrapper() as SetIterator<T>;
     }
 
     values() {
-        return this.#iterableWrapper() as IterableIterator<T>;
+        return this.#iterableWrapper() as SetIterator<T>;
     }
 
     [Symbol.iterator]() {
-        return this.#iterableWrapper() as IterableIterator<T>;
+        return this.#iterableWrapper() as SetIterator<T>;
     }
 
     #iterableWrapper(entries?: boolean) {

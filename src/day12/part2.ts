@@ -1,7 +1,7 @@
 // Advent of Code - Day 12 - Part Two
 
-import { Queue } from './array-deque';
-import { StringSet } from './string-set';
+import { Queue } from '@lib/array-deque';
+import { StringSet } from '@lib/string-set';
 
 const directions = [
     [0, -1],
