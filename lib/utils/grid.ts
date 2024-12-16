@@ -35,8 +35,8 @@ export class Grid<T> {
     clone(): Grid<T> {
         return new Grid(this.items.map((row) => row.slice()));
     }
-    toString(): string {
-        return this.items.map((row) => row.join('')).join('\n');
+    toString(mapper?: (item: T) => string): string {
+        return this.items.map((row) => row.map((v) => mapper ? mapper(v) : v).join('')).join('\n');
     }
     get height(): number {
         return this.items.length;
