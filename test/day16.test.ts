@@ -4,7 +4,7 @@ import { part1, part2 } from '../src/day16';
 
 let input = '';
 try {
-    input = await Bun.file('src/day16/resources/input.txt').text();
+    // input = await Bun.file('src/day16/resources/input.txt').text();
 } catch (e) {
     // ignore
 }

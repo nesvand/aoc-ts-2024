@@ -32,7 +32,11 @@ export function part1(input: string) {
     const seen = Array.from({ length: grid.width * grid.height * 4 }, () => false);
 
     /*
-      Explain MinHeapMap
+      A Min Heap (as the name suggests) is a data structure that allows us to efficiently find the minimum value in a set of values.
+      
+      This is convenient as it means each loop starts at a position with the lowest cost, adding new positions to explore (which will
+      sort and present us with the next lowest cost to check). Dead-ends and points we've already seen are not added again (thanks to
+      the `seen` array).
     */
     const h = new MinHeapMap<Seen>([], 0, true, compareSeen, false);
 
