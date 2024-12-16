@@ -44,4 +44,22 @@ export class Grid<T> {
     get width(): number {
         return this.items[0].length;
     }
+    [Symbol.iterator](): Iterator<[number, number, T]> {
+        let x = 0;
+        let y = 0;
+        return {
+            next: () => {
+                if (x >= this.items[0].length) {
+                    x = 0;
+                    y += 1;
+                }
+                if (y >= this.items.length) {
+                    return { done: true, value: undefined };
+                }
+                const item = this.items[y][x];
+                x += 1;
+                return { done: false, value: [x - 1, y, item] };
+            },
+        };
+    }
 }
