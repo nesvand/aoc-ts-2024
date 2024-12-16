@@ -10,5 +10,6 @@ import * as strings from './utils/strings';
 import * as grid from './utils/grid';
 import * as stringset from './external/string-set';
 import * as arraydeque from './external/array-deque';
+import * as minheapmap from './external/min-heap-map';
 
-export { array, bench, bits, color, data, general, math, strings, SV, grid, stringset, arraydeque };
+export { array, bench, bits, color, data, general, math, strings, SV, grid, stringset, arraydeque, minheapmap };
