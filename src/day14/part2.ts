@@ -32,7 +32,7 @@ export async function part2(input: string, width = 101, height = 103): Promise<n
         }
         if (d < minDist) {
             minDist = d;
-            const grid = Grid.from(width, height, 0);
+            const grid = Grid.from(width, height, () => 0);
             for (const [x, y] of points) {
                 // biome-ignore lint/style/noNonNullAssertion: <explanation>
                 grid.set(x, y, grid.get(x, y)! + 1);
