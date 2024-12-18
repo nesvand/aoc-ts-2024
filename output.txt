@@ -1,6 +1,0 @@
-Output: 0 for a = 0 (0) with 1 matches
-Output: 3,0 for a = 24 (11000) with 0 matches
-Output: 4,3,0 for a = 224 (11100000) with 1 matches
-Output: 5,4,3,0 for a = 1832 (11100101000) with 0 matches
-Output: 3,5,4,3,0 for a = 14680 (11100101011000) with 0 matches
-Output: 0,3,5,4,3,0 for a = 117440 (11100101011000000) with 6 matches
