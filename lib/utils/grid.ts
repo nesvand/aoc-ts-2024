@@ -7,11 +7,8 @@ export class Grid<T> {
             }
         }
     }
-    [Symbol.iterator](): Iterator<[number, number, T]> {
-        return this.iterate();
-    }
-    static from<F>(width: number, height: number, value: F): Grid<F> {
-        const items = Array.from({ length: height }, () => Array.from({ length: width }, () => value));
+    static from<F>(width: number, height: number, value: (v: unknown, k: number) => F): Grid<F> {
+        const items = Array.from({ length: height }, () => Array.from({ length: width }, value));
         return new Grid(items);
     }
     find(token: T, compare = (a: T, b: T) => a === b): Array<[number, number]> {
@@ -61,5 +58,8 @@ export class Grid<T> {
                 return { done: false, value: [x - 1, y, item] };
             },
         };
+    }
+    get [Symbol.toStringTag]() {
+        return this.toString();
     }
 }
