@@ -1,7 +1,6 @@
 // Advent of Code - Day 18 - Part One
 
 import { Grid } from "@lib/grid";
-import { mod } from "@lib/math";
 import { alg, Graph, type Edge } from "@dagrejs/graphlib";
 
 export const directions = [
@@ -11,7 +10,14 @@ export const directions = [
     [0, 1],
 ];
 
-export function runDjikstra(grid: Grid<number>, width: number, height: number, exitBeforeStart = false): number {
+export function runDjikstra(grid: Grid<number>, incomingBytes: Array<[number, number]>, width: number, height: number, previousCount?: number, newCount?: number): number {
+    if (previousCount !== undefined && newCount !== undefined) {
+        for (let i = previousCount; i < newCount; i++) {
+            const [x, y] = incomingBytes[i];
+            grid.set(x, y, 1);
+        }
+    }
+
     const g = new Graph();
     for (const [x, y, v] of grid) {
         if (v >= 1) continue;
@@ -30,7 +36,7 @@ export function runDjikstra(grid: Grid<number>, width: number, height: number, e
 
     const pathToEnd = [end];
     let path = paths[end];
-    if (exitBeforeStart && path.predecessor === undefined) return -1;
+    if (path.predecessor === undefined) return -1;
     while (pathToEnd !== undefined && path.distance !== 0) {
         pathToEnd.unshift(path.predecessor);
         path = paths[path.predecessor];
@@ -39,14 +45,14 @@ export function runDjikstra(grid: Grid<number>, width: number, height: number, e
     return pathToEnd.length - 1;
 }
 
-export function part1(input: string, width = 71, height = 71, initialState = 1024): number {
+export function part1(input: string, width = 71, height = 71, initialIndex = 1024): number {
     const incomingBytes = input.trim().split('\n').map(line => line.split(',').map(Number)) as Array<[number, number]>;
     const grid = Grid.from(width, height, () => 0);
 
-    for (let i = 0; i < initialState; i++) {
-        const [x, y] = incomingBytes[mod(i, incomingBytes.length)];
+    for (let i = 0; i < initialIndex; i++) {
+        const [x, y] = incomingBytes[i];
         grid.set(x, y, 1);
     }
 
-    return runDjikstra(grid, width, height);
+    return runDjikstra(grid, incomingBytes, width, height, initialIndex);
 }
