@@ -1,11 +1,11 @@
 // Advent of Code - Day 14 - Part One
 
-import { memoize } from "@lib/general";
+import memoize from 'memoize';
 import { mod } from "@lib/math";
 
 export const nextpos = memoize(([px, py]: [number, number], [vx, vy]: [number, number], width: number, height: number): [number, number] => {
     return [mod((px + vx), width), mod((py + vy), height)];
-});
+}, { cacheKey: ([[px, py], [vx, vy], width, height]) => `${px},${py},${vx},${vy},${width},${height}` });
 
 
 export function part1(input: string, width = 101, height = 103): number {

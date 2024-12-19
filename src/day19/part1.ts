@@ -1,18 +1,18 @@
 // Advent of Code - Day 19 - Part One
 
-import { memoizeRecursive } from "@lib/general";
+import memoize from "memoize";
 
 export function part1(input: string): number {
     const [patternsInput, designsInput] = input.trim().split('\n\n');
     const patterns = patternsInput.split(', ');
     const designs = designsInput.split('\n');
 
-    const canMakeDesign = memoizeRecursive((it: (d: string, p: string[]) => boolean, design: string, patterns: string[]): boolean => {
+    const canMakeDesign = memoize((design: string, patterns: string[]): boolean => {
         if (design === "") return true;
 
         for (const pattern of patterns) {
             if (design.startsWith(pattern)) {
-                if (it(design.slice(pattern.length), patterns)) {
+                if (canMakeDesign(design.slice(pattern.length), patterns)) {
                     return true;
                 }
             }

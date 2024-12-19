@@ -1,6 +1,6 @@
 {
     "name": "advent-of-code-2024-typescript",
-    "version": "0.2.7",
+    "version": "0.3.0",
     "description": "Typescript solutions for Advent of Code 2024",
     "scripts": {
         "test": "scripts/test.sh",
@@ -15,9 +15,12 @@
         "advent-of-code",
         "bun"
     ],
-    "author": "Andrew Nesvadba <nesvand@gmail.com>k",
+    "author": "Andrew Nesvadba <nesvand@gmail.com>",
     "license": "MIT",
     "dependencies": {
+        "deep-weak-map": "1.1.0",
+        "many-keys-map": "2.0.1",
+        "memoize": "10.0.0",
         "remeda": "2.17.3",
         "yargs": "17.7.2"
     },

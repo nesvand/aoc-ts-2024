@@ -1,6 +1,7 @@
 // Advent of Code - Day 11 - Part One
 
-import { memoizeRecursive } from '@lib/general';
+import memoize from "memoize";
+
 
 /*
     Rules:
@@ -11,22 +12,23 @@ import { memoizeRecursive } from '@lib/general';
     - Order is preserved
 */
 
-export const processStone = memoizeRecursive(
-    (_processStone: (stone: number, blinks: number) => number, stone: number, blinks: number): number => {
+export const processStone = memoize(
+    (stone: number, blinks: number): number => {
         if (blinks === 0) return 1;
 
         let total = 0;
         const stoneString = stone.toString();
-        if (stone === 0) total = _processStone(1, blinks - 1);
+        if (stone === 0) total = processStone(1, blinks - 1);
         else if (stoneString.length % 2 === 0) {
             const left = Number.parseInt(stoneString.slice(0, stoneString.length / 2));
             const right = Number.parseInt(stoneString.slice(-stoneString.length / 2));
-            total = _processStone(left, blinks - 1) + _processStone(right, blinks - 1);
+            total = processStone(left, blinks - 1) + processStone(right, blinks - 1);
         } else {
-            total = _processStone(stone * 2024, blinks - 1);
+            total = processStone(stone * 2024, blinks - 1);
         }
         return total;
     },
+    { cacheKey: ([s, b]) => `${s},${b}` },
 );
 
 export function part1(input: string): number {
