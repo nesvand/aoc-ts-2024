@@ -13,13 +13,13 @@ export const asyncTimes = async <T>(n: number, operation: () => Promise<T>, para
     return parallel
         ? Promise.all(Array.from({ length: n }, () => operation()))
         : Array.from({ length: n }).reduce<Promise<T[]>>(
-              async (acc, _) => {
-                  const results = await acc;
-                  results.push(await operation());
-                  return results;
-              },
-              Promise.resolve([] as T[]),
-          );
+            async (acc, _) => {
+                const results = await acc;
+                results.push(await operation());
+                return results;
+            },
+            Promise.resolve([] as T[]),
+        );
 };
 
 type Creator<V> = () => V;
@@ -102,15 +102,16 @@ export function memoize<Args extends unknown[], Ret>(
 
 // Recursive function memoization example
 export function memoizeRecursive<Ret, Args extends unknown[] = unknown[]>(
-    fn: (memo: (...args: Args) => Ret, ...args: Args) => Ret,
+    fn: (memo: (...args: Args) => Ret, ...args: Args) => Ret, options: { resolver?: (...args: Args) => string; } = {},
 ): (...args: Args) => Ret {
     const memo = new Map<string, Ret>();
 
     const memoizedFn = (...args: Args) => {
-        const key = JSON.stringify(args);
+        const toKey = options.resolver ?? ((...args) => JSON.stringify(args));
+        const key = toKey(...args);
 
         const cached = memo.get(key);
-        if (cached) return cached;
+        if (cached !== undefined) return cached;
 
         const result = fn(
             (...innerArgs: Args) => memoizedFn(...innerArgs), // Self-referential memoized call
