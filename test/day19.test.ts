@@ -11,12 +11,22 @@ try {
 
 test('part one test', () => {
     // biome-ignore lint/style/noUnusedTemplateLiteral: Empty by design
-    expect(part1(``)).toBe(0);
+    expect(part1(`r, wr, b, g, bwu, rb, gb, br
+
+brwrr
+bggr
+gbbr
+rrbgbr
+ubwu
+bwurrg
+brgr
+bbrgwb
+`)).toBe(6);
 });
 
 if (input !== '') {
     test('part one answer', () => {
-        expect(part1(input)).toBe(0);
+        expect(part1(input)).toBe(327);
     });
 }
 

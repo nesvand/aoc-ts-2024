@@ -13,13 +13,13 @@ export const asyncTimes = async <T>(n: number, operation: () => Promise<T>, para
     return parallel
         ? Promise.all(Array.from({ length: n }, () => operation()))
         : Array.from({ length: n }).reduce<Promise<T[]>>(
-              async (acc, _) => {
-                  const results = await acc;
-                  results.push(await operation());
-                  return results;
-              },
-              Promise.resolve([] as T[]),
-          );
+            async (acc, _) => {
+                const results = await acc;
+                results.push(await operation());
+                return results;
+            },
+            Promise.resolve([] as T[]),
+        );
 };
 
 type Creator<V> = () => V;
@@ -110,7 +110,7 @@ export function memoizeRecursive<Ret, Args extends unknown[] = unknown[]>(
         const key = JSON.stringify(args);
 
         const cached = memo.get(key);
-        if (cached) return cached;
+        if (cached !== undefined) return cached;
 
         const result = fn(
             (...innerArgs: Args) => memoizedFn(...innerArgs), // Self-referential memoized call
