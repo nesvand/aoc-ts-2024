@@ -102,12 +102,20 @@ export function memoize<Args extends unknown[], Ret>(
 
 // Recursive function memoization example
 export function memoizeRecursive<Ret, Args extends unknown[] = unknown[]>(
-    fn: (memo: (...args: Args) => Ret, ...args: Args) => Ret,
+    fn: (memo: (...args: Args) => Ret, ...args: Args) => Ret, byParams?: number[],
 ): (...args: Args) => Ret {
     const memo = new Map<string, Ret>();
 
     const memoizedFn = (...args: Args) => {
-        const key = JSON.stringify(args);
+        let key = '';
+        if (byParams === undefined || byParams?.length === 0) key = JSON.stringify(args);
+        else {
+            const params: unknown[] = [];
+            for (const i of byParams) {
+                params.push(args[i]);
+            }
+            key = JSON.stringify(params);
+        }
 
         const cached = memo.get(key);
         if (cached !== undefined) return cached;

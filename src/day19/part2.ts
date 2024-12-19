@@ -17,7 +17,7 @@ export function part2(input: string): number {
             }
         }
         return count;
-    });
+    }, [0]);
 
     let count = 0;
     for (const design of designs) {
