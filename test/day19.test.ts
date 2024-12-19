@@ -32,11 +32,21 @@ if (input !== '') {
 
 test('part two test', () => {
     // biome-ignore lint/style/noUnusedTemplateLiteral: Empty by design
-    expect(part2(``)).toBe(0);
+    expect(part2(`r, wr, b, g, bwu, rb, gb, br
+
+brwrr
+bggr
+gbbr
+rrbgbr
+ubwu
+bwurrg
+brgr
+bbrgwb
+`)).toBe(16);
 });
 
 if (input !== '') {
     test('part two answer', () => {
-        expect(part2(input)).toBe(0);
+        expect(part2(input)).toBe(772696486795255);
     });
 }
