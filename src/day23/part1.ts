@@ -45,20 +45,20 @@ export class UndirectedGraph {
             yield r;
             return;
         }
-        let _p = new Set(p);
-        let _x = new Set(x);
 
-        const u = takeNext(_p) ?? takeNext(_x);
+        const u = takeNext(p.union(x));
         if (u === null) throw new Error('No nodes left in p or x');
 
-        for (const v of _p.difference(this.connectedNodes(u))) {
+        for (const v of p.difference(this.connectedNodes(u))) {
             yield* this.#bronKerbosch(
                 r.union(new Set([v])),
-                _p.intersection(this.connectedNodes(v)),
-                _x.intersection(this.connectedNodes(v)),
+                p.intersection(this.connectedNodes(v)),
+                x.intersection(this.connectedNodes(v)),
             );
-            _p = _p.difference(new Set([v]));
-            _x = _x.union(new Set([v]));
+            // biome-ignore lint/style/noParameterAssign: This is fine - we only use these values in this closure
+            p = p.difference(new Set([v]));
+            // biome-ignore lint/style/noParameterAssign: This is fine - we only use these values in this closure
+            x = x.union(new Set([v]));
         }
     }
 }
